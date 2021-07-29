@@ -1,0 +1,42 @@
+.button {
+  @include font-size(large);
+  @include font-weight(medium);
+  display: inline-block;
+  border-radius: 0;
+  border: 3px solid color(black);
+  padding: 1.3rem 3.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.7;
+  text-align: center;
+  transition: color 0.8s ease;
+  transition-property: background-color, color, box-shadow, transform;
+
+  @include respond(large) {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+    cursor: pointer;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  &--primary {
+    background: color(black);
+    color: color(white);
+
+    @include respond(large) {
+      &:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+        filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.3));
+      }
+    }
+  }
+
+  &--outline {
+    background: transparent;
+    color: color(black);
+  }
+}

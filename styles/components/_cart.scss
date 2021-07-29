@@ -1,0 +1,14 @@
+.cart {
+  &__container {
+    display: inline-flex;
+  }
+
+  &__icon {
+    font-size: 3.2rem;
+    color: color(black);
+
+    @include respond(large) {
+      font-size: 5.4rem;
+    }
+  }
+}

@@ -1,0 +1,31 @@
+h1,
+h2,
+h3 {
+  @include font-size(m-large);
+  @include heading;
+}
+
+h4,
+h5,
+h6 {
+  @include heading;
+  font-size: 2.2rem;
+}
+
+p,
+li,
+a {
+  @include font-weight(regular);
+  @include font-size(medium);
+  line-height: 1.6;
+  letter-spacing: 0.2px;
+  color: color(grey-shade1);
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+ul {
+  list-style: none;
+}

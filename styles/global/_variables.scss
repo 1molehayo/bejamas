@@ -1,0 +1,63 @@
+$colors: (
+  ash: #f2f2f2,
+  black: #000000,
+  green: #219653,
+  grey-shade1: #656565,
+  grey-shade2: #e4e4e4,
+  grey-shade3: #c2c2c2,
+  grey-shade4: #9b9b9b,
+  red: #f00,
+  white: #ffffff,
+);
+
+$font-families: (
+  archivo: "Archivo",
+  icomoon: "icomoon",
+);
+
+$font-weights: (
+  regular: 400,
+  medium: 500,
+  bold: 700,
+);
+
+$font-sizes: (
+  xx-small: 0.9rem,
+  x-small: 1.2rem,
+  small: 1.4rem,
+  regular: 1.6rem,
+  medium: 1.8rem,
+  large: 2.3rem,
+  m-large: 3rem,
+  x-large: 3.4rem,
+);
+
+$max-width: 129rem;
+$gutter-width: 1rem;
+$num-of-columns: 12;
+
+$break-points: (
+  // large mobile phones
+  smallest: 480px,
+  // small tabs or phablets
+  small: 600px,
+  // tabs and ipads
+  medium: 768px,
+  // large tabs / large ipads / small laptops
+  large: 990px,
+  // laptops / desktops
+  largest: 1200px
+);
+
+$device-sizes: (
+  sm: "small",
+  md: "medium",
+  lg: "large",
+  xl: "largest",
+);
+
+$sides: (top, bottom, left, right);
+
+$modal-close-position: 5rem;
+
+$header-position: 5;

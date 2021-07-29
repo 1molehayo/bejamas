@@ -1,0 +1,42 @@
+@mixin font-family($keyword) {
+  font-family: get-font-family($keyword);
+}
+
+@mixin font-size($keyword) {
+  font-size: get-font-size($keyword);
+}
+
+@mixin font-weight($keyword) {
+  font-weight: get-font-weight($keyword);
+}
+
+@mixin respond($keyword) {
+  // default will be small mobile phones
+
+  @if get-break-point($keyword) {
+    @media only screen and (min-width: get-break-point($keyword)) {
+      @content;
+    }
+  }
+}
+
+@mixin grid-column($num) {
+  flex: 0 0 calc(100% * #{$num} / #{$num-of-columns});
+  width: calc(100% * #{$num} / #{$num-of-columns});
+}
+
+@mixin link {
+  transition: color 0.3s;
+
+  &:hover {
+    color: color(primary);
+  }
+}
+
+@mixin heading {
+  @include font-weight(bold);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  text-transform: capitalize;
+  color: color(black);
+}
