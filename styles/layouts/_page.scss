@@ -3,4 +3,8 @@
     min-height: 80vh;
     background-color: color(white);
   }
+
+  &--backdrop {
+    overflow: hidden;
+  }
 }

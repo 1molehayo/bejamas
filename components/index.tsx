@@ -4,3 +4,4 @@ export * from "./context";
 export * from "./filter";
 export * from "./hero";
 export * from "./products";
+export * from "./sort";

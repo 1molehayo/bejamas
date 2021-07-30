@@ -1,0 +1,117 @@
+.filter {
+  z-index: 2;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 90%;
+  background-color: color(white);
+
+  @include respond(large) {
+    position: static;
+    padding: 0;
+    width: auto;
+    height: auto;
+  }
+
+  &__backdrop {
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba($color: color(black), $alpha: 0.2);
+  }
+
+  &__body {
+    padding: 3rem 2rem 3rem;
+    width: 100%;
+    height: calc(100% - 10rem);
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    @include respond(medium) {
+      display: grid;
+      grid-template-columns: 50% 50%;
+    }
+
+    @include respond(large) {
+      display: block;
+      padding-right: 0;
+      padding-left: 0;
+      width: auto;
+      height: auto;
+    }
+
+    .divider {
+      position: static;
+      border-width: 1px;
+      border-bottom: 0;
+      border-color: color(grey-shade3);
+      margin: 3rem 0;
+      max-width: 100%;
+      width: 300px;
+
+      @include respond(medium) {
+        margin: 4rem 0;
+        display: none;
+      }
+
+      @include respond(large) {
+        display: block;
+      }
+    }
+
+    h4 {
+      @include respond(medium) {
+        margin-bottom: 2rem;
+      }
+    }
+  }
+
+  &__close {
+    @include font-size(medium);
+    position: absolute;
+    top: calc(3rem + 3px);
+    right: 2rem;
+    border: 0;
+    background-color: transparent;
+    color: color(black);
+  }
+
+  &__footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 10rem;
+
+    &-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 4px solid color(grey-shade2);
+      width: 100%;
+      height: 100%;
+
+      @include respond(medium) {
+        justify-content: center;
+      }
+    }
+
+    button {
+      @include font-size(medium);
+      flex: 0 0 calc(50% - 2rem);
+      margin: 0 1rem;
+      width: calc(50% - 2rem);
+
+      @include respond(medium) {
+        flex: none;
+        padding-right: 4rem;
+        padding-left: 4rem;
+        width: auto;
+      }
+    }
+  }
+}

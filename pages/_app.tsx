@@ -5,11 +5,11 @@ import { AppProvider } from "../contexts/appContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Layout>
-      <AppProvider>
+    <AppProvider>
+      <Layout>
         <Component {...pageProps} />
-      </AppProvider>
-    </Layout>
+      </Layout>
+    </AppProvider>
   );
 }
 export default MyApp;

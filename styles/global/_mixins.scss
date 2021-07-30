@@ -25,18 +25,17 @@
   width: calc(100% * #{$num} / #{$num-of-columns});
 }
 
-@mixin link {
-  transition: color 0.3s;
-
-  &:hover {
-    color: color(primary);
-  }
-}
-
 @mixin heading {
   @include font-weight(bold);
   margin-bottom: 1rem;
   line-height: 1.2;
   text-transform: capitalize;
   color: color(black);
+}
+
+@mixin sort-button {
+  display: inline-block;
+  border: 0;
+  padding: 0;
+  background: transparent;
 }

@@ -4,16 +4,19 @@ const useEventListener = (
   event: string,
   handler: () => void,
   passive = false
-): void => {
+) => {
   useEffect(() => {
-    // initiate the event handler
-    window.addEventListener(event, handler, passive);
+    if (typeof window !== "undefined") {
+      // initiate the event handler
+      window.addEventListener(event, handler, passive);
 
-    // this will clean up the event every time the component is re-rendered
-    return function cleanup() {
-      window.removeEventListener(event, handler);
-    };
-  });
+      // this will clean up the event every time the component is re-rendered
+      return function cleanup() {
+        window.removeEventListener(event, handler);
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 };
 
 export default useEventListener;

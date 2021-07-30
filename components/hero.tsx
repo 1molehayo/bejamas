@@ -5,7 +5,6 @@ import buyThree from "../assets/images/buy3.png";
 import Image from "next/image";
 import { Button } from "./button";
 import { useAppContext } from "../contexts/appContext";
-import classnames from "classnames";
 import { formatCharLength } from "../utility";
 
 const Hero = () => {
@@ -67,14 +66,7 @@ const Hero = () => {
                 />
               </div>
               <div className="col-lg-5">
-                <h4
-                  className={classnames({
-                    "text-left pt-5": isTab,
-                    "text-right": !isTab,
-                  })}
-                >
-                  People also buy
-                </h4>
+                <h4 className="thumbnail-heading">People also buy</h4>
 
                 <div className="thumbnail-wrapper">
                   <div className="hero__thumbnail">

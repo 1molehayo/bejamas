@@ -1,0 +1,40 @@
+.sort {
+  margin-left: 1.5rem;
+
+  &__desktop {
+    @include font-size(large);
+
+    button {
+      @include sort-button;
+      margin-right: 0.7rem;
+    }
+
+    .icon-sort {
+      font-size: 1.5rem;
+    }
+
+    select {
+      border: 0;
+
+      &:hover,
+      &:focus {
+        box-shadow: none;
+        outline: none;
+      }
+    }
+
+    .sort__text {
+      margin-right: 1.5rem;
+      color: color(grey-shade4);
+    }
+  }
+
+  &__mobile {
+    @include sort-button;
+
+    .icon-settings {
+      @include font-size(m-large);
+      color: color(black);
+    }
+  }
+}
