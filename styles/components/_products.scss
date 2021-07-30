@@ -49,8 +49,21 @@
         }
       }
 
+      h1 {
+        @include font-size(large);
+
+        @include respond(small) {
+          @include font-size(m-large);
+        }
+      }
+
       h4 {
+        @include font-size(medium);
         margin-top: 1.2rem;
+
+        @include respond(small) {
+          @include font-size(large);
+        }
 
         @include respond(large) {
           margin-bottom: 0;
@@ -62,14 +75,30 @@
         color: color(grey-shade1);
       }
 
+      &--mb {
+        margin-bottom: 3rem;
+
+        @include respond(large) {
+          margin-bottom: 5rem;
+        }
+      }
+
       p {
-        @include font-size(m-large);
+        @include font-size(large);
+
+        @include respond(small) {
+          @include font-size(m-large);
+        }
       }
     }
 
     &__image {
       position: relative;
-      height: 50rem;
+      height: 35rem;
+
+      @include respond(small) {
+        height: 50rem;
+      }
 
       @include respond(medium) {
         height: 30rem;
