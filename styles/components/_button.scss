@@ -4,16 +4,16 @@
   display: inline-block;
   border-radius: 0;
   border: 3px solid color(black);
-  padding: 1.3rem 3.9rem;
+  padding: 1.3rem 2.5rem;
   text-transform: uppercase;
-  letter-spacing: 0.7;
+  letter-spacing: 0.07em;
   text-align: center;
   transition: color 0.8s ease;
   transition-property: background-color, color, box-shadow, transform;
 
   @include respond(large) {
-    padding-left: 2.5rem;
-    padding-right: 2.5rem;
+    padding-left: 3.9rem;
+    padding-right: 3.9rem;
     cursor: pointer;
   }
 

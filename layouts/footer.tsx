@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="container footer__container">
         <p className="footer__text copyright">
-          © Bejamas.io - All rights reserved.
+          © {getYear()} Bejamas.io - All rights reserved.
         </p>
       </div>
     </footer>

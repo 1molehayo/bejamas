@@ -1,4 +1,6 @@
 .header {
+  position: relative;
+
   &__container {
     display: flex;
     align-items: center;
@@ -7,7 +9,11 @@
   }
 
   &__logo {
-    font-size: 2.6rem;
+    font-size: 2rem;
     color: color(black);
+
+    @include respond(large) {
+      font-size: 2.6rem;
+    }
   }
 }

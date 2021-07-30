@@ -99,6 +99,14 @@ $start: 0;
 }
 
 .divider {
-  border: 4px solid color(grey-shade2);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border: 2px solid color(grey-shade2);
   margin: 0;
+  width: 100%;
+
+  @include respond(large) {
+    position: static;
+  }
 }

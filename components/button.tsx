@@ -1,12 +1,20 @@
 import classnames from "classnames";
 
-interface ButtonProps {
-  className: string;
+interface IProps {
+  className?: string;
   text: string;
   type: string;
 }
 
-export const Button = ({ className, type, text }: ButtonProps) => {
+const defaultProps = {
+  type: "primary",
+};
+
+export const Button = ({
+  className,
+  type,
+  text,
+}: IProps & typeof defaultProps) => {
   return (
     <button
       className={classnames("button", className, {
@@ -18,3 +26,5 @@ export const Button = ({ className, type, text }: ButtonProps) => {
     </button>
   );
 };
+
+Button.defaultProps = defaultProps;
