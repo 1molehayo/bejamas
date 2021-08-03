@@ -1,7 +1,23 @@
+import { Dispatch, SetStateAction } from "react";
+import { sortProducts } from "../apis";
 import { useAppContext } from "../contexts/appContext";
+import ProductModel from "../models/product";
 
-export const SortProducts = () => {
+interface IProps {
+  setProducts: Dispatch<SetStateAction<any>>;
+}
+
+export const SortProducts = ({ setProducts }: IProps) => {
   const { isTab, toggleFilter } = useAppContext();
+
+  const sortBy = async (val: string) => {
+    try {
+      const { products } = await sortProducts(val);
+      setProducts(products);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="sort">
@@ -19,12 +35,15 @@ export const SortProducts = () => {
 
           <span className="sort__text">Sort By</span>
 
-          <select name="sort" id="sort">
+          <select
+            name="sort"
+            id="sort"
+            defaultValue="price"
+            onChange={(e) => sortBy(e.target.value)}
+          >
             <option value="a-z">A - Z</option>
             <option value="z-a">Z - A</option>
-            <option value="price" selected>
-              Price
-            </option>
+            <option value="price">Price</option>
           </select>
         </div>
       )}

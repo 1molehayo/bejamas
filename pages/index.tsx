@@ -1,12 +1,68 @@
 import Head from "next/head";
-import { SortProducts } from "../components";
-import Filter from "../components/filter";
+import React, { useState } from "react";
+import { fetchCategories, fetchProducts } from "../apis";
+import { Filter, SortProducts } from "../components";
 import Hero from "../components/hero";
 import Products from "../components/products";
-// import { useAppContext } from "../contexts/appContext";
-import { PRODUCTS } from "../utility/constants";
+import { useAppContext } from "../contexts/appContext";
+import ProductModel from "../models/product";
+import { removeCategoryDuplicates } from "../utility";
 
-export default function Home() {
+export const getStaticProps = async () => {
+  try {
+    const { products, lastDoc, firstDoc } = await fetchProducts("next", 0);
+    const { categories, featured } = await fetchCategories();
+
+    return {
+      props: {
+        products,
+        categories,
+        featured,
+        lastDoc,
+        firstDoc,
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        error: JSON.stringify(error) || "Error loading products",
+        products: [],
+        categories: [],
+        featured: null,
+      },
+    };
+  }
+};
+
+interface IProps {
+  error: Error;
+  status: boolean;
+  products: ProductModel[];
+  categories: string[];
+  featured: ProductModel;
+  lastDoc: any;
+  firstDoc: any;
+}
+
+export default function Home({
+  error,
+  products,
+  categories,
+  featured,
+  lastDoc,
+  firstDoc,
+}: IProps) {
+  const [productsData, setProducts] = useState<ProductModel[]>(products);
+  const { updateFirstDoc, updateLastDoc } = useAppContext();
+
+  React.useEffect(() => {
+    if (firstDoc || lastDoc) {
+      updateFirstDoc(firstDoc);
+      updateLastDoc(lastDoc);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstDoc, lastDoc]);
+
   return (
     <div className="home">
       <Head>
@@ -14,7 +70,7 @@ export default function Home() {
         <meta name="description" content="Bejamas art ecommerce" />
       </Head>
 
-      <Hero />
+      {featured && <Hero featured={featured} />}
 
       <section className="section">
         <div className="container">
@@ -28,12 +84,12 @@ export default function Home() {
               </h1>
             </div>
 
-            <SortProducts />
+            <SortProducts setProducts={setProducts} />
           </div>
 
           <div className="home__products">
-            <Filter />
-            <Products products={PRODUCTS} />
+            <Filter categories={removeCategoryDuplicates(categories)} />
+            <Products products={productsData} setProducts={setProducts} />
           </div>
         </div>
       </section>

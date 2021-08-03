@@ -5,11 +5,15 @@ import { transformPrices } from "../utility";
 import { PRICE_RANGES, PRODUCT_CATEGORIES } from "../utility/constants";
 import { Button } from "./button";
 
-const Filter = () => {
+interface IProps {
+  categories: string[];
+}
+
+export const Filter = ({ categories }: IProps) => {
   const { isLargeTab, openFilter, toggleFilter } = useAppContext();
 
   if (isLargeTab && !openFilter) {
-    return null;
+    return <div></div>;
   }
 
   return (
@@ -29,7 +33,7 @@ const Filter = () => {
           <div>
             <h4>{isLargeTab ? "Filter" : "Category"}</h4>
 
-            {PRODUCT_CATEGORIES.map((category, i) => (
+            {categories.map((category, i) => (
               <div key={i} className="checkbox">
                 <input
                   type="checkbox"
@@ -69,5 +73,3 @@ const Filter = () => {
     </>
   );
 };
-
-export default Filter;

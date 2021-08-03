@@ -8,15 +8,21 @@ interface DimensionsModel {
   height: number;
 }
 
+interface RecommendationsModel {
+  alt: string;
+  src: string;
+  id: string;
+}
+
 interface DetailsModel {
   dimensions: DimensionsModel;
   size: number;
   description: string;
-  recommendations: ImageModel[];
+  recommendations: RecommendationsModel[];
 }
 
 interface ProductModel {
-  id: number;
+  id: string;
   name: string;
   category: string;
   price: number;

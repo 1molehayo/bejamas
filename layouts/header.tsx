@@ -1,4 +1,4 @@
-import Cart from "../components/cart";
+import { Cart } from "../components";
 import Link from "next/link";
 
 const Header = () => {

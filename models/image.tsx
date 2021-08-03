@@ -1,4 +1,5 @@
 export interface ImagePropModel {
+  fit?: string;
   h?: number;
   w?: number;
   dpr?: number;

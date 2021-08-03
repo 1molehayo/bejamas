@@ -55,6 +55,13 @@
         @include respond(small) {
           @include font-size(m-large);
         }
+
+        @include respond(medium) {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          margin-bottom: 0;
+        }
       }
 
       h4 {

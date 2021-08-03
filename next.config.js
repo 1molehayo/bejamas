@@ -6,6 +6,6 @@ module.exports = {
     includePaths: [path.join(__dirname, "styles")],
   },
   images: {
-    domains: ["picsum.photos", "images.pexels.com"],
+    domains: ["images.pexels.com"],
   },
 };

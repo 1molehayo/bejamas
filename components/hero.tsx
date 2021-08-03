@@ -1,48 +1,49 @@
-import heroPic from "../assets/images/hero.png";
-import buyOne from "../assets/images/buy1.png";
-import buyTwo from "../assets/images/buy2.png";
-import buyThree from "../assets/images/buy3.png";
 import Image from "next/image";
 import { Button } from "./button";
 import { useAppContext } from "../contexts/appContext";
-import { formatCharLength } from "../utility";
+import { formatBytes, formatCharLength, getOptimizedImage } from "../utility";
+import ProductModel from "../models/product";
+import { ImagePropModel } from "../models/image";
 
-const Hero = () => {
+interface IProps {
+  featured: ProductModel;
+}
+
+const Hero = ({ featured }: IProps) => {
   const { isMobile, isTab } = useAppContext();
 
   const AddToCartButton = () => (
     <Button text="add to cart" className={isMobile ? "w-100 mt-5" : ""} />
   );
 
-  const description = `So how did the classical Latin become so incoherent? According
-                  to McClintock, a 15th century typesetter likely scrambled part
-                  of Cicero&apos;s De Finibus in order to provide placeholder
-                  text to mockup various fonts for a type specimen book.So how
-                  did the classical Latin become so incoherent? According to
-                  McClintock, a 15th century typesetter likely scrambled part of
-                  Cicero&apos;s De Finibus in order to provide placeholder
-                  <br />
-                  <br />
-                  text to mockup various fonts for a type specimen book.So how
-                  did the classical Latin become so incoherent? According to
-                  McClintock.`;
+  const getImageProps = (): ImagePropModel => {
+    if (isMobile) {
+      return { w: 768 };
+    }
+
+    if (isTab) {
+      return { w: 990 };
+    }
+
+    return { w: 1250 };
+  };
 
   return (
     <section className="hero">
       <div className="container">
         <div className="section">
           <div className="hero__header">
-            <h1 className="mb-0">Samurai King Resting</h1>
+            <h1 className="mb-0">{featured.name}</h1>
 
             {!isMobile && AddToCartButton()}
           </div>
           <div className="hero__image">
             <Image
-              src={heroPic}
+              src={getOptimizedImage(featured.image.src, getImageProps())}
               layout="fill"
               objectFit="cover"
-              alt="hero"
-              placeholder="blur"
+              objectPosition="center"
+              alt={featured.image.alt}
             />
 
             <div className="hero__badge">
@@ -53,57 +54,46 @@ const Hero = () => {
           <div className="hero__content">
             <div className="row">
               <div className="col-lg-7">
-                <h4>About the Samurai King Resting</h4>
+                <h4>About {featured.name}</h4>
 
-                {!isTab && <h5 className="color-grey-shade1">Pets</h5>}
+                {!isTab && (
+                  <h5 className="color-grey-shade1">{featured.category}</h5>
+                )}
 
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: isMobile
-                      ? formatCharLength(description, 300)
-                      : description,
-                  }}
-                />
+                {featured.details?.description && (
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: isMobile
+                        ? formatCharLength(featured.details?.description, 300)
+                        : featured.details?.description,
+                    }}
+                  />
+                )}
               </div>
               <div className="col-lg-5">
                 <h4 className="thumbnail-heading">People also buy</h4>
 
                 <div className="thumbnail-wrapper">
-                  <div className="hero__thumbnail">
-                    <Image
-                      src={buyOne}
-                      layout="fill"
-                      objectFit="cover"
-                      alt="product thumbnail"
-                      placeholder="blur"
-                    />
-                  </div>
-
-                  <div className="hero__thumbnail">
-                    <Image
-                      src={buyTwo}
-                      layout="fill"
-                      objectFit="cover"
-                      alt="product thumbnail"
-                      placeholder="blur"
-                    />
-                  </div>
-
-                  <div className="hero__thumbnail">
-                    <Image
-                      src={buyThree}
-                      layout="fill"
-                      objectFit="cover"
-                      alt="product thumbnail"
-                      placeholder="blur"
-                    />
-                  </div>
+                  {featured.details?.recommendations.map((item, i) => (
+                    <div className="hero__thumbnail" key={i}>
+                      <Image
+                        src={item.src}
+                        layout="fill"
+                        objectFit="cover"
+                        alt={item.alt}
+                      />
+                    </div>
+                  ))}
                 </div>
 
                 <div className="buy-details">
                   <h5>Details</h5>
-                  <p>Size: 1020 x 1020 pixel</p>
-                  <p>Size: 15 mb</p>
+                  <p>
+                    Size:{" "}
+                    {`${featured.details?.dimensions.width} x ${featured.details?.dimensions.height} `}
+                    pixel
+                  </p>
+                  <p>Size: {formatBytes(featured.details?.size)}</p>
                 </div>
               </div>
             </div>

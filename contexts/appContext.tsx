@@ -14,6 +14,10 @@ interface ContextProps {
   isLargeTab: boolean;
   openFilter: boolean;
   toggleFilter?: () => void;
+  lastDoc?: any;
+  firstDoc?: any;
+  updateFirstDoc?: React.SetStateAction<any>;
+  updateLastDoc?: React.SetStateAction<any>;
 }
 
 const ContextDefaultValues: ContextProps = {
@@ -34,6 +38,8 @@ export const AppProvider = ({ children }: IProps) => {
   const [isTab, setIsTab] = useState<boolean>(false);
   const [isLargeTab, setIsLargeTab] = useState<boolean>(false);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
+  const [lastDoc, setLastDoc] = useState();
+  const [firstDoc, setFirstDoc] = useState();
 
   const updateWindowDimensions = () => {
     setIsLargeTab(window.screen.width < 990);
@@ -49,6 +55,12 @@ export const AppProvider = ({ children }: IProps) => {
 
   const toggleFilter = (): void => setOpenFilter((prevState) => !prevState);
 
+  const updateFirstDoc = (val: React.SetStateAction<any>): void =>
+    setFirstDoc(val);
+
+  const updateLastDoc = (val: React.SetStateAction<any>): void =>
+    setLastDoc(val);
+
   return (
     <AppContext.Provider
       value={{
@@ -57,6 +69,10 @@ export const AppProvider = ({ children }: IProps) => {
         isLargeTab,
         openFilter,
         toggleFilter,
+        lastDoc,
+        firstDoc,
+        updateFirstDoc,
+        updateLastDoc,
       }}
     >
       {children}

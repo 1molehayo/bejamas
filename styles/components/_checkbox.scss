@@ -28,6 +28,7 @@
       padding-left: 0;
       cursor: pointer;
       color: color(dark);
+      text-transform: capitalize;
     }
 
     & + label::before {
