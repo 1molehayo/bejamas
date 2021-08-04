@@ -50,7 +50,9 @@ export const fetchProducts = async (
 ) => {
   try {
     let snapshotQuery: any = db.collection("products");
-    const doc = docToUse ? docToUse[sortProps === "price" ? "price" : "name"] : 0;
+    const doc = docToUse
+      ? docToUse[sortProps === "price" ? "price" : "name"]
+      : 0;
 
     if (filterProps) {
       const { categories, prices } = filterProps;
@@ -97,9 +99,7 @@ export const fetchProducts = async (
     if (direction === "next") {
       snapshotQuery = snapshotQuery.startAfter(doc || 0).limit(PAGE_SIZE);
     } else {
-      snapshotQuery = snapshotQuery
-        .endBefore(doc || 0)
-        .limitToLast(PAGE_SIZE);
+      snapshotQuery = snapshotQuery.endBefore(doc || 0).limitToLast(PAGE_SIZE);
     }
 
     const productsDoc = await snapshotQuery.get();
@@ -116,6 +116,22 @@ export const fetchCategories = async () => {
     const docSize = await allProducts.size;
     const pageSize = docSize > PAGE_SIZE ? Math.ceil(docSize / PAGE_SIZE) : 1;
     const categories = await allProducts.docs.map((doc) => doc.data().category);
+    const priceDoc = await productsCollection
+      .orderBy("price", "desc")
+      .limit(1)
+      .get();
+    
+    let priceList = [];
+    const highestPrice = priceDoc.docs.map((doc) => doc.data().price)[0];
+    const res = highestPrice / 5;
+
+    for (let i = 0; i < 4; i++) {
+      if (i === 3) {
+        priceList.push(`${(res * i).toFixed(2)}`);
+      } else {
+        priceList.push(`${(res * i).toFixed(2)}-${((res * (i + 1)) - 0.01).toFixed(2)}`);
+      }
+    }
 
     const featuredDoc = await productsCollection
       .where("featured", "==", true)
@@ -123,7 +139,7 @@ export const fetchCategories = async () => {
 
     const featured = await featuredDoc.docs.map((doc) => doc.data())[0];
 
-    return { categories, featured, pageSize };
+    return { categories, featured, pageSize, priceList };
   } catch (error) {
     throw error;
   }

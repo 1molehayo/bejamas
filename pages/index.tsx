@@ -12,7 +12,8 @@ import { removeCategoryDuplicates } from "../utility";
 export const getStaticProps = async () => {
   try {
     const { products, lastDoc, firstDoc } = await fetchProducts("next", 0);
-    const { categories, featured, pageSize } = await fetchCategories();
+    const { categories, featured, pageSize, priceList } =
+      await fetchCategories();
 
     return {
       props: {
@@ -20,6 +21,7 @@ export const getStaticProps = async () => {
         categories,
         featured,
         pageSize,
+        priceList,
         lastDoc,
         firstDoc,
       },
@@ -31,6 +33,7 @@ export const getStaticProps = async () => {
         products: [],
         categories: [],
         featured: null,
+        priceList: [],
       },
     };
   }
@@ -43,6 +46,7 @@ interface IProps {
   categories: string[];
   featured: ProductModel;
   pageSize: number;
+  priceList: string[];
   lastDoc: any;
   firstDoc: any;
 }
@@ -53,6 +57,7 @@ export default function Home({
   categories,
   featured,
   pageSize,
+  priceList,
   lastDoc,
   firstDoc,
 }: IProps) {
@@ -107,7 +112,11 @@ export default function Home({
           </div>
 
           <div className="home__products">
-            <Filter productCategories={removeCategoryDuplicates(categories)} />
+            <Filter
+              productPrices={priceList}
+              currency={products[0]?.currency}
+              productCategories={removeCategoryDuplicates(categories)}
+            />
             <Products />
           </div>
         </div>

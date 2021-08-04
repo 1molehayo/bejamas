@@ -1,16 +1,24 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import classnames from "classnames";
 import { useAppContext } from "../contexts/appContext";
 import { transformPrices } from "../utility";
-import { PRICE_RANGES } from "../utility/constants";
 import { Button } from "./button";
 import { fetchProducts } from "../pages/api";
+import { CURRENCY_SYMBOLS } from "../utility/constants";
+import { useDebounce } from "../services/useDebounce";
+import CurrencyOptions from "../models/currency";
 
 interface IProps {
   productCategories: string[];
+  productPrices: string[];
+  currency: string;
 }
 
-export const Filter = ({ productCategories }: IProps) => {
+export const Filter = ({
+  productCategories,
+  productPrices,
+  currency,
+}: IProps) => {
   const {
     isLargeTab,
     openFilter,
@@ -25,13 +33,67 @@ export const Filter = ({ productCategories }: IProps) => {
     toggleLoader,
   } = useAppContext();
 
-  const { prices, categories } = filterProps;
+  const { price, categories } = filterProps;
 
-  const onFilter = async () => {
-    toggleLoader(true);
+  const debouncedFilteredProps = useDebounce(filterProps, 500);
+
+  useEffect(
+    () => {
+      if (debouncedFilteredProps) {
+        toggleLoader();
+
+        fetchProducts("next", 0, debouncedFilteredProps, sortProps).then(
+          (res) => {
+            updateFirstDoc(res.firstDoc);
+            updateLastDoc(res.lastDoc);
+            updateCurrentPage(1);
+            updateProducts(res.products);
+            toggleLoader();
+          }
+        );
+      } else {
+        updateProducts([]);
+        toggleLoader();
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [debouncedFilteredProps]
+  );
+
+  const handleCheckBox = async (value: string) => {
+    let arr = [...categories];
+    const index = arr.findIndex((elem) => elem === value);
+
+    if (index === -1) {
+      arr.push(value);
+    } else {
+      arr.splice(index, 1);
+    }
+
+    updateFilterProps({
+      categories: arr,
+      price,
+    });
+  };
+
+  const handleRadioBox = async (value: string) => {
+    console.log(value);
+    updateFilterProps({
+      categories,
+      price: value,
+    });
+  };
+
+  const onFilterMobile = async (newProps: any) => {
+    toggleLoader();
 
     try {
-      const res = await fetchProducts("next", 0, filterProps, sortProps);
+      const res = await fetchProducts(
+        "next",
+        0,
+        newProps || filterProps,
+        sortProps
+      );
       updateFirstDoc(res.firstDoc);
       updateLastDoc(res.lastDoc);
       updateCurrentPage(1);
@@ -45,10 +107,14 @@ export const Filter = ({ productCategories }: IProps) => {
 
   const onReset = async () => {
     try {
-      await onFilter();
+      await onFilterMobile({
+        categories: [],
+        price: "",
+      });
+
       updateFilterProps({
-        selectedCategories: [],
-        selectedPrices: [],
+        categories: [],
+        price: "",
       });
     } catch (error) {
       console.log(error);
@@ -82,6 +148,9 @@ export const Filter = ({ productCategories }: IProps) => {
                   type="checkbox"
                   name={`category-${i}`}
                   id={`category-${i}`}
+                  value={category}
+                  checked={categories.includes(category)}
+                  onChange={(e) => handleCheckBox(e.target.value)}
                 />
 
                 <label htmlFor={`category-${i}`}>{category}</label>
@@ -94,11 +163,21 @@ export const Filter = ({ productCategories }: IProps) => {
           <div>
             <h4>Price range</h4>
 
-            {transformPrices("$", PRICE_RANGES).map((price, j) => (
+            {transformPrices(
+              CURRENCY_SYMBOLS[currency as keyof CurrencyOptions],
+              productPrices
+            ).map((priceItem, j) => (
               <div key={j} className="checkbox">
-                <input type="radio" name={`price-${j}`} id={`price-${j}`} />
+                <input
+                  type="radio"
+                  value={priceItem.value}
+                  checked={price === priceItem.value}
+                  onChange={(e) => handleRadioBox(e.target.value)}
+                  name={`price-${j}`}
+                  id={`price-${j}`}
+                />
 
-                <label htmlFor={`price-${j}`}>{price.label}</label>
+                <label htmlFor={`price-${j}`}>{priceItem.label}</label>
               </div>
             ))}
           </div>
@@ -108,7 +187,7 @@ export const Filter = ({ productCategories }: IProps) => {
           <div className="filter__footer">
             <div className="filter__footer-row">
               <Button text="clear" type="outline" onClick={onReset} />
-              <Button text="save" onClick={onFilter} />
+              <Button text="save" onClick={onFilterMobile} />
             </div>
           </div>
         )}

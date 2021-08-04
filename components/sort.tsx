@@ -16,7 +16,7 @@ export const SortProducts = () => {
   } = useAppContext();
 
   const sortBy = async (val: string) => {
-    toggleLoader(true);
+    toggleLoader();
 
     try {
       updateSortProps(val);
@@ -28,7 +28,7 @@ export const SortProducts = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      toggleLoader(false);
+      toggleLoader();
     }
   };
 

@@ -12,7 +12,7 @@ import useEventListener from "../services/useEventListener";
 
 interface IFilter {
   categories: string[];
-  prices: string[];
+  price: string;
 }
 interface ContextProps {
   addToCart?: React.SetStateAction<any>;
@@ -49,7 +49,7 @@ const ContextDefaultValues: ContextProps = {
   currentPage: 0,
   filterProps: {
     categories: [],
-    prices: [],
+    price: "",
   },
   isLargeTab: false,
   isMobile: false,
@@ -81,7 +81,7 @@ export const AppProvider = ({ children }: IProps) => {
   const [cart, setCart] = useState<CartModel[]>([]);
   const [filterProps, setFilterProps] = useState<IFilter>({
     categories: [],
-    prices: [],
+    price: "",
   });
   const [sortProps, setSortProps] = useState<string>("price");
   const [loading, setLoading] = useState<boolean>(false);
