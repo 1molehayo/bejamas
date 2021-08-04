@@ -22,6 +22,10 @@
     box-shadow: none;
   }
 
+  &:disabled {
+    opacity: 0.4;
+  }
+
   &--primary {
     background: color(black);
     color: color(white);

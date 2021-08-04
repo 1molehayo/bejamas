@@ -1,26 +1,44 @@
-import { Dispatch, SetStateAction } from "react";
-import { sortProducts } from "../apis";
+import { fetchProducts } from "../pages/api";
 import { useAppContext } from "../contexts/appContext";
-import ProductModel from "../models/product";
+import { useState } from "react";
+import { Loader } from "./loader";
 
-interface IProps {
-  setProducts: Dispatch<SetStateAction<any>>;
-}
+export const SortProducts = () => {
+  const {
+    isTab,
+    toggleFilter,
+    updateFirstDoc,
+    updateLastDoc,
+    updateCurrentPage,
+    updateProducts,
+    filterProps,
+    sortProps,
+    updateSortProps,
+  } = useAppContext();
 
-export const SortProducts = ({ setProducts }: IProps) => {
-  const { isTab, toggleFilter } = useAppContext();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const sortBy = async (val: string) => {
+    setLoading(true);
+
     try {
-      const { products } = await sortProducts(val);
-      setProducts(products);
+      updateSortProps(val);
+      const res = await fetchProducts("next", 0, filterProps, val);
+      updateFirstDoc(res.firstDoc);
+      updateLastDoc(res.lastDoc);
+      updateCurrentPage(1);
+      updateProducts(res.products);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="sort">
+      {loading && <Loader />}
+
       {isTab && (
         <button onClick={toggleFilter} className="sort__mobile">
           <span className="icon-settings" />
@@ -38,11 +56,11 @@ export const SortProducts = ({ setProducts }: IProps) => {
           <select
             name="sort"
             id="sort"
-            defaultValue="price"
+            value={sortProps}
             onChange={(e) => sortBy(e.target.value)}
           >
-            <option value="a-z">A - Z</option>
-            <option value="z-a">Z - A</option>
+            <option value="asc">A - Z</option>
+            <option value="desc">Z - A</option>
             <option value="price">Price</option>
           </select>
         </div>

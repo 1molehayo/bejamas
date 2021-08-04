@@ -1,6 +1,7 @@
 import Head from "next/head";
+import Error from "next/error";
 import React, { useState } from "react";
-import { fetchCategories, fetchProducts } from "../apis";
+import { fetchCategories, fetchProducts } from "./api";
 import { Filter, SortProducts } from "../components";
 import Hero from "../components/hero";
 import Products from "../components/products";
@@ -11,13 +12,14 @@ import { removeCategoryDuplicates } from "../utility";
 export const getStaticProps = async () => {
   try {
     const { products, lastDoc, firstDoc } = await fetchProducts("next", 0);
-    const { categories, featured } = await fetchCategories();
+    const { categories, featured, pageSize } = await fetchCategories();
 
     return {
       props: {
         products,
         categories,
         featured,
+        pageSize,
         lastDoc,
         firstDoc,
       },
@@ -25,7 +27,7 @@ export const getStaticProps = async () => {
   } catch (error) {
     return {
       props: {
-        error: JSON.stringify(error) || "Error loading products",
+        errorCode: 500,
         products: [],
         categories: [],
         featured: null,
@@ -35,33 +37,50 @@ export const getStaticProps = async () => {
 };
 
 interface IProps {
-  error: Error;
+  errorCode: number;
   status: boolean;
   products: ProductModel[];
   categories: string[];
   featured: ProductModel;
+  pageSize: number;
   lastDoc: any;
   firstDoc: any;
 }
 
 export default function Home({
-  error,
+  errorCode,
   products,
   categories,
   featured,
+  pageSize,
   lastDoc,
   firstDoc,
 }: IProps) {
-  const [productsData, setProducts] = useState<ProductModel[]>(products);
-  const { updateFirstDoc, updateLastDoc } = useAppContext();
+  const { updateFirstDoc, updateLastDoc, updateProducts, updatePageSize } =
+    useAppContext();
 
   React.useEffect(() => {
-    if (firstDoc || lastDoc) {
+    if (firstDoc) {
       updateFirstDoc(firstDoc);
+    }
+
+    if (lastDoc) {
       updateLastDoc(lastDoc);
     }
+
+    if (products) {
+      updateProducts(products);
+    }
+
+    if (pageSize) {
+      updatePageSize(pageSize);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firstDoc, lastDoc]);
+  }, [firstDoc, lastDoc, products, pageSize]);
+
+  if (errorCode) {
+    return <Error statusCode={errorCode} />;
+  }
 
   return (
     <div className="home">
@@ -84,12 +103,12 @@ export default function Home({
               </h1>
             </div>
 
-            <SortProducts setProducts={setProducts} />
+            <SortProducts />
           </div>
 
           <div className="home__products">
-            <Filter categories={removeCategoryDuplicates(categories)} />
-            <Products products={productsData} setProducts={setProducts} />
+            <Filter productCategories={removeCategoryDuplicates(categories)} />
+            <Products />
           </div>
         </div>
       </section>

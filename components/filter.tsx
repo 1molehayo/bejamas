@@ -1,16 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
 import classnames from "classnames";
 import { useAppContext } from "../contexts/appContext";
 import { transformPrices } from "../utility";
 import { PRICE_RANGES, PRODUCT_CATEGORIES } from "../utility/constants";
 import { Button } from "./button";
+import { fetchProducts } from "../pages/api";
+import { Loader } from "./loader";
 
 interface IProps {
-  categories: string[];
+  productCategories: string[];
 }
 
-export const Filter = ({ categories }: IProps) => {
-  const { isLargeTab, openFilter, toggleFilter } = useAppContext();
+export const Filter = ({ productCategories }: IProps) => {
+  const {
+    isLargeTab,
+    openFilter,
+    toggleFilter,
+    updateFirstDoc,
+    updateLastDoc,
+    updateCurrentPage,
+    updateProducts,
+    filterProps,
+    sortProps,
+    updateFilterProps,
+  } = useAppContext();
+
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { prices, categories } = filterProps;
+
+  const onFilter = async () => {
+    setLoading(true);
+
+    try {
+      const res = await fetchProducts("next", 0, filterProps, sortProps);
+      updateFirstDoc(res.firstDoc);
+      updateLastDoc(res.lastDoc);
+      updateCurrentPage(1);
+      updateProducts(res.products);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onReset = async () => {
+    try {
+      await onFilter();
+      updateFilterProps({
+        selectedCategories: [],
+        selectedPrices: [],
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   if (isLargeTab && !openFilter) {
     return <div></div>;
@@ -18,6 +63,8 @@ export const Filter = ({ categories }: IProps) => {
 
   return (
     <>
+      {loading && <Loader />}
+
       {isLargeTab && (
         <div className={classnames("filter__backdrop", { fade: openFilter })} />
       )}
@@ -33,7 +80,7 @@ export const Filter = ({ categories }: IProps) => {
           <div>
             <h4>{isLargeTab ? "Filter" : "Category"}</h4>
 
-            {categories.map((category, i) => (
+            {productCategories.map((category, i) => (
               <div key={i} className="checkbox">
                 <input
                   type="checkbox"
@@ -53,7 +100,7 @@ export const Filter = ({ categories }: IProps) => {
 
             {transformPrices("$", PRICE_RANGES).map((price, j) => (
               <div key={j} className="checkbox">
-                <input type="checkbox" name={`price-${j}`} id={`price-${j}`} />
+                <input type="radio" name={`price-${j}`} id={`price-${j}`} />
 
                 <label htmlFor={`price-${j}`}>{price.label}</label>
               </div>
@@ -64,8 +111,8 @@ export const Filter = ({ categories }: IProps) => {
         {isLargeTab && (
           <div className="filter__footer">
             <div className="filter__footer-row">
-              <Button text="clear" type="outline" />
-              <Button text="save" />
+              <Button text="clear" type="outline" onClick={onReset} />
+              <Button text="save" onClick={onFilter} />
             </div>
           </div>
         )}

@@ -10,7 +10,8 @@
     padding-bottom: 20px;
   }
 
-  input[type="checkbox"] {
+  input[type="checkbox"],
+  input[type="radio"] {
     display: none;
     margin: 0;
     width: 23px;

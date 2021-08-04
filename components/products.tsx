@@ -1,20 +1,30 @@
 import Image from "next/image";
-import { Dispatch, SetStateAction } from "react";
-import { fetchProducts } from "../apis";
+import { useState } from "react";
+import { fetchProducts } from "../pages/api";
 import { useAppContext } from "../contexts/appContext";
 import { ImagePropModel } from "../models/image";
-import ProductModel from "../models/product";
 import { formatPrice, getOptimizedImage } from "../utility";
 import { Button } from "./button";
 import { Pagination } from "./pagination";
+import { Loader } from "./loader";
 
-interface IProducts {
-  products: ProductModel[];
-  setProducts: Dispatch<SetStateAction<any>>;
-}
+const Products = () => {
+  const {
+    isMobile,
+    isTab,
+    lastDoc,
+    firstDoc,
+    updateFirstDoc,
+    updateLastDoc,
+    currentPage,
+    updateCurrentPage,
+    updateProducts,
+    products,
+    filterProps,
+    sortProps,
+  } = useAppContext();
 
-const Products = ({ products, setProducts }: IProducts) => {
-  const { isMobile, isTab, lastDoc, firstDoc } = useAppContext();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const imageOptions = {
     fit: "crop",
@@ -33,19 +43,33 @@ const Products = ({ products, setProducts }: IProducts) => {
   };
 
   const fetchData = async (direction: "next" | "prev") => {
+    setLoading(true);
+
     try {
-      const doc =
-        direction === "next" ? JSON.parse(lastDoc) : JSON.parse(firstDoc);
-      const res = await fetchProducts(direction, doc);
-      console.log(res.products);
-      setProducts(res.products);
+      const doc = direction === "next" ? lastDoc : firstDoc;
+      const res = await fetchProducts(direction, doc, filterProps, sortProps);
+      updateFirstDoc(res.firstDoc);
+      updateLastDoc(res.lastDoc);
+
+      if (direction === "next") {
+        updateCurrentPage(currentPage + 1);
+      } else {
+        const page = currentPage > 1 ? currentPage - 1 : 1;
+        updateCurrentPage(page);
+      }
+
+      updateProducts(res.products);
     } catch (error) {
-      console.log("error");
+      console.log("error", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="products">
+      {loading && <Loader />}
+
       <div className="row pb-5">
         {products &&
           products.map((product, i) => (

@@ -1,7 +1,4 @@
-interface ImageModel {
-  src: string;
-  alt: string;
-}
+import ProductImageModel from "./productImage";
 
 interface DimensionsModel {
   width: number;
@@ -27,7 +24,7 @@ interface ProductModel {
   category: string;
   price: number;
   currency: string;
-  image: ImageModel;
+  image: ProductImageModel;
   bestseller: boolean;
   featured: boolean;
   details: DetailsModel | null;

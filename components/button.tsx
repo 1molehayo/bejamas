@@ -1,9 +1,12 @@
 import classnames from "classnames";
+import { MouseEventHandler } from "react";
 
 interface IProps {
   className?: string;
   text: string;
   type: string;
+  disabled?: boolean;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
 const defaultProps = {
@@ -12,11 +15,15 @@ const defaultProps = {
 
 export const Button = ({
   className,
+  disabled,
   type,
   text,
+  onClick,
 }: IProps & typeof defaultProps) => {
   return (
     <button
+      onClick={onClick}
+      disabled={disabled}
       className={classnames("button", className, {
         "button--outline": type === "outline",
         "button--primary": type !== "outline",
