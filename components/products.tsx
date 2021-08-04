@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { useState } from "react";
 import { fetchProducts } from "../pages/api";
 import { useAppContext } from "../contexts/appContext";
 import { ImagePropModel } from "../models/image";
@@ -22,9 +21,10 @@ const Products = () => {
     products,
     filterProps,
     sortProps,
+    loading,
+    toggleLoader,
+    addToCart,
   } = useAppContext();
-
-  const [loading, setLoading] = useState<boolean>(false);
 
   const imageOptions = {
     fit: "crop",
@@ -43,7 +43,7 @@ const Products = () => {
   };
 
   const fetchData = async (direction: "next" | "prev") => {
-    setLoading(true);
+    toggleLoader();
 
     try {
       const doc = direction === "next" ? lastDoc : firstDoc;
@@ -62,7 +62,7 @@ const Products = () => {
     } catch (error) {
       console.log("error", error);
     } finally {
-      setLoading(false);
+      toggleLoader();
     }
   };
 
@@ -86,7 +86,11 @@ const Products = () => {
                     objectFit="cover"
                   />
 
-                  <Button text="add to cart" className="w-100" />
+                  <Button
+                    text="add to cart"
+                    onClick={() => addToCart(product)}
+                    className="w-100"
+                  />
                 </div>
                 <h4 title={product.category}>{product.category}</h4>
                 <h1 title={product.name}>{product.name}</h1>

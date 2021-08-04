@@ -10,10 +10,14 @@ interface IProps {
 }
 
 const Hero = ({ featured }: IProps) => {
-  const { isMobile, isTab } = useAppContext();
+  const { isMobile, isTab, addToCart } = useAppContext();
 
   const AddToCartButton = () => (
-    <Button text="add to cart" className={isMobile ? "w-100 mt-5" : ""} />
+    <Button
+      text="add to cart"
+      onClick={() => addToCart(featured)}
+      className={isMobile ? "w-100 mt-5" : ""}
+    />
   );
 
   const getImageProps = (): ImagePropModel => {

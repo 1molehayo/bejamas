@@ -15,41 +15,50 @@ interface IFilter {
   prices: string[];
 }
 interface ContextProps {
+  addToCart?: React.SetStateAction<any>;
+  cart: CartModel[];
+  clearCart?: () => void;
+  currentPage: number;
+  filterProps: IFilter;
+  firstDoc?: any;
+  isLargeTab: boolean;
   isMobile: boolean;
   isTab: boolean;
-  isLargeTab: boolean;
-  openFilter: boolean;
-  toggleFilter?: () => void;
-  products: ProductModel[];
-  updateProducts?: React.SetStateAction<any>;
   lastDoc?: any;
-  firstDoc?: any;
+  loading: boolean;
+  openFilter: boolean;
+  pageSize: number;
+  products: ProductModel[];
+  removeFromCart?: React.SetStateAction<any>;
+  showContext: boolean;
+  sortProps: string;
+  toggleContext?: () => void;
+  toggleFilter?: () => void;
+  toggleLoader?: React.SetStateAction<any>;
+  updateCurrentPage?: React.SetStateAction<any>;
+  updateFilterProps?: React.SetStateAction<any>;
   updateFirstDoc?: React.SetStateAction<any>;
   updateLastDoc?: React.SetStateAction<any>;
-  currentPage: number;
-  updateCurrentPage?: React.SetStateAction<any>;
-  pageSize: number;
   updatePageSize?: React.SetStateAction<any>;
-  addToCart?: (val: ProductModel) => void;
-  removeFromCart?: (val: string) => void;
-  filterProps: IFilter;
-  updateFilterProps?: React.SetStateAction<any>;
-  sortProps: string;
+  updateProducts?: React.SetStateAction<any>;
   updateSortProps?: React.SetStateAction<any>;
 }
 
 const ContextDefaultValues: ContextProps = {
-  isMobile: false,
-  isTab: false,
-  isLargeTab: false,
-  openFilter: false,
-  products: [],
+  cart: [],
   currentPage: 0,
-  pageSize: 0,
   filterProps: {
     categories: [],
     prices: [],
   },
+  isLargeTab: false,
+  isMobile: false,
+  isTab: false,
+  loading: false,
+  openFilter: false,
+  pageSize: 0,
+  products: [],
+  showContext: false,
   sortProps: "price",
 };
 
@@ -75,6 +84,8 @@ export const AppProvider = ({ children }: IProps) => {
     prices: [],
   });
   const [sortProps, setSortProps] = useState<string>("price");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showContext, setShowContext] = useState<boolean>(false);
 
   const updateWindowDimensions = () => {
     setIsLargeTab(window.screen.width < 990);
@@ -112,6 +123,10 @@ export const AppProvider = ({ children }: IProps) => {
 
   const updateSortProps = (val: string): void => setSortProps(val);
 
+  const toggleLoader = (): void => setLoading((prevState) => !prevState);
+
+  const toggleContext = (): void => setShowContext((prevState) => !prevState);
+
   const addToCart = (item: ProductModel): void => {
     const arr = [...cart];
 
@@ -126,6 +141,7 @@ export const AppProvider = ({ children }: IProps) => {
     arr.push(obj);
     localStorage.setItem("cart", JSON.stringify(arr));
     setCart(arr);
+    setShowContext(true);
   };
 
   const removeFromCart = (id: string): void => {
@@ -134,29 +150,41 @@ export const AppProvider = ({ children }: IProps) => {
     setCart(arr);
   };
 
+  const clearCart = (): void => {
+    localStorage.removeItem("cart");
+    setCart([]);
+    setShowContext(false);
+  };
+
   return (
     <AppContext.Provider
       value={{
+        addToCart,
+        cart,
+        clearCart,
+        currentPage,
+        filterProps,
+        firstDoc,
+        lastDoc,
+        isLargeTab,
         isMobile,
         isTab,
-        isLargeTab,
+        loading,
         openFilter,
-        toggleFilter,
+        pageSize,
         products,
-        updateProducts,
-        lastDoc,
-        firstDoc,
+        removeFromCart,
+        showContext,
+        sortProps,
+        toggleContext,
+        toggleFilter,
+        toggleLoader,
+        updateCurrentPage,
+        updateFilterProps,
         updateFirstDoc,
         updateLastDoc,
-        currentPage,
-        updateCurrentPage,
-        pageSize,
         updatePageSize,
-        addToCart,
-        removeFromCart,
-        filterProps,
-        updateFilterProps,
-        sortProps,
+        updateProducts,
         updateSortProps,
       }}
     >

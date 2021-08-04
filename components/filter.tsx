@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import classnames from "classnames";
 import { useAppContext } from "../contexts/appContext";
 import { transformPrices } from "../utility";
-import { PRICE_RANGES, PRODUCT_CATEGORIES } from "../utility/constants";
+import { PRICE_RANGES } from "../utility/constants";
 import { Button } from "./button";
 import { fetchProducts } from "../pages/api";
-import { Loader } from "./loader";
 
 interface IProps {
   productCategories: string[];
@@ -23,14 +22,13 @@ export const Filter = ({ productCategories }: IProps) => {
     filterProps,
     sortProps,
     updateFilterProps,
+    toggleLoader,
   } = useAppContext();
-
-  const [loading, setLoading] = useState<boolean>(false);
 
   const { prices, categories } = filterProps;
 
   const onFilter = async () => {
-    setLoading(true);
+    toggleLoader(true);
 
     try {
       const res = await fetchProducts("next", 0, filterProps, sortProps);
@@ -41,7 +39,7 @@ export const Filter = ({ productCategories }: IProps) => {
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
+      toggleLoader(false);
     }
   };
 
@@ -63,8 +61,6 @@ export const Filter = ({ productCategories }: IProps) => {
 
   return (
     <>
-      {loading && <Loader />}
-
       {isLargeTab && (
         <div className={classnames("filter__backdrop", { fade: openFilter })} />
       )}

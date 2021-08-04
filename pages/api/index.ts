@@ -52,14 +52,11 @@ export const fetchProducts = async (
     let snapshotQuery: any = db.collection("products");
     const doc = docToUse ? docToUse[sortProps === "price" ? "price" : "name"] : 0;
 
-    let str: string = `db.collection("products")`;
-
     if (filterProps) {
       const { categories, prices } = filterProps;
 
       if (categories && categories.length > 0) {
         snapshotQuery = snapshotQuery.where("category", "in", categories);
-        str = str + `.where("category", "in", ${categories})`;
       }
 
       if (prices && prices.length > 0) {
@@ -72,8 +69,6 @@ export const fetchProducts = async (
               ">=",
               parseInt(priceArr[0])
             );
-
-            str = str + `.where("price", ">=", ${parseInt(priceArr[0])})`;
           }
 
           if (priceArr[1]) {
@@ -82,8 +77,6 @@ export const fetchProducts = async (
               "<=",
               parseInt(priceArr[1])
             );
-
-            str = str + `.where("price", "<=", ${parseInt(priceArr[1])})`;
           }
         });
       }
@@ -91,29 +84,23 @@ export const fetchProducts = async (
 
     if (sortProps === "asc") {
       snapshotQuery = snapshotQuery.orderBy("name", "asc");
-      str = str + `.orderBy("name", "asc")`;
     }
 
     if (sortProps === "desc") {
       snapshotQuery = snapshotQuery.orderBy("name", "desc");
-      str = str + `.orderBy("name", "desc")`;
     }
 
     if (!sortProps || sortProps === "price") {
       snapshotQuery = snapshotQuery.orderBy("price");
-      str = str + `.orderBy("price")`;
     }
 
     if (direction === "next") {
       snapshotQuery = snapshotQuery.startAfter(doc || 0).limit(PAGE_SIZE);
-      str = str + `.startAfter(${doc || 0}).limit(${PAGE_SIZE})`;
     } else {
       snapshotQuery = snapshotQuery
         .endBefore(doc || 0)
         .limitToLast(PAGE_SIZE);
     }
-
-    // console.log("snapshotQuery", str);
 
     const productsDoc = await snapshotQuery.get();
 

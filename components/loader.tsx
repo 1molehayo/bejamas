@@ -1,7 +1,12 @@
 export const Loader = () => {
   return (
-    <div className="loading">
-      <p>Loading !!!</p>
+    <div className="loader__wrapper">
+      <div className="loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </div>
   );
 };

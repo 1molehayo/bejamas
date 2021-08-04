@@ -4,7 +4,7 @@ import { MouseEventHandler } from "react";
 interface IProps {
   className?: string;
   text: string;
-  type: string;
+  type: "primary" | "outline";
   disabled?: boolean;
   onClick?: MouseEventHandler<HTMLButtonElement>;
 }

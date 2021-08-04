@@ -1,7 +1,5 @@
 import { fetchProducts } from "../pages/api";
 import { useAppContext } from "../contexts/appContext";
-import { useState } from "react";
-import { Loader } from "./loader";
 
 export const SortProducts = () => {
   const {
@@ -14,12 +12,11 @@ export const SortProducts = () => {
     filterProps,
     sortProps,
     updateSortProps,
+    toggleLoader,
   } = useAppContext();
 
-  const [loading, setLoading] = useState<boolean>(false);
-
   const sortBy = async (val: string) => {
-    setLoading(true);
+    toggleLoader(true);
 
     try {
       updateSortProps(val);
@@ -31,14 +28,12 @@ export const SortProducts = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
+      toggleLoader(false);
     }
   };
 
   return (
     <div className="sort">
-      {loading && <Loader />}
-
       {isTab && (
         <button onClick={toggleFilter} className="sort__mobile">
           <span className="icon-settings" />
